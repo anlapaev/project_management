@@ -1,0 +1,31 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>{{ task.title }}</h1>
+  <p>{{ task.description }}</p>
+  <p>Due date: {{ task.due_date }}</p>
+  <p>Status: {{ task.get_status_display }}</p>
+  <p>Priority: {{ task.get_priority_display }}</p>
+  <p>Assigned to: {{ task.assigned_to }}</p>
+  <a class="btn btn-secondary" href="{% url 'task_edit' task.pk %}">Edit task</a>
+  <form method="post" action="{% url 'task_delete' task.pk %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete task</button>
+  </form>
+
+  <h2 class="mt-5">Comments</h2>
+  <ul class="list-group mt-3">
+    {% for comment in task.comments.all %}
+      <li class="list-group-item">
+        <p>{{ comment.text }}</p>
+        <small>By {{ comment.author }} on {{ comment.created_at }}</small>
+      </li>
+    {% endfor %}
+  </ul>
+  <h3 class="mt-4">Add a comment</h3>
+  <form method="post" action="{% url 'add_comment_to_task' task.pk %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add comment</button>
+  </form>
+{% endblock %}

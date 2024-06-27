@@ -1,0 +1,35 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>{{ project.name }}</h1>
+  <p>{{ project.description }}</p>
+  <p>Start date: {{ project.start_date }}</p>
+  <p>End date: {{ project.end_date }}</p>
+  <a class="btn btn-secondary" href="{% url 'project_edit' project.pk %}">Edit project</a>
+  <form method="post" action="{% url 'project_delete' project.pk %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete project</button>
+  </form>
+
+  <h2 class="mt-5">Members</h2>
+  <a class="btn btn-primary" href="{% url 'project_add_member' project.pk %}">Add Member</a>
+  <ul class="list-group mt-3">
+    {% for member in project.members.all %}
+      <li class="list-group-item">
+        {{ member.username }}
+        <a class="btn btn-danger btn-sm float-right" href="{% url 'project_remove_member' project.pk member.pk %}">Remove</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <h2 class="mt-5">Tasks</h2>
+  <a class="btn btn-primary" href="{% url 'task_create' project.pk %}">Create new task</a>
+  <ul class="list-group mt-3">
+    {% for task in project.tasks.all %}
+      <li class="list-group-item">
+        <a href="{% url 'task_detail' task.pk %}">{{ task.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+
